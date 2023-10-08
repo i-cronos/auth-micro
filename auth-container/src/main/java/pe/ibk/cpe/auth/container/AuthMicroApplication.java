@@ -6,18 +6,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 
-@SpringBootApplication(
-        scanBasePackageClasses = {
-                pe.ibk.cpe.auth.infrastructure.security.config.CustomerAuthSecurityConfiguration.class
-        }
-)
+@SpringBootApplication
 @ComponentScan(
         basePackages = {
                 "pe.ibk.cpe.auth.domain.core",
                 "pe.ibk.cpe.auth.domain.service",
                 "pe.ibk.cpe.auth.infrastructure.database",
                 "pe.ibk.cpe.auth.infrastructure.security",
-                "pe.ibk.cpe.auth.application.rest",}
+                "pe.ibk.cpe.auth.application.rest"}
 )
 public class AuthMicroApplication {
 
