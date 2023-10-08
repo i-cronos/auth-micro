@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorRequest;
 import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorResponse;
-import pe.ibk.cpe.auth.domain.service.user.dto.LoginCustomerRequest;
-import pe.ibk.cpe.auth.domain.service.user.dto.LoginCustomerResponse;
 import pe.ibk.cpe.auth.domain.service.user.port.inbound.LoginCollaboratorUseCase;
 
 @Slf4j

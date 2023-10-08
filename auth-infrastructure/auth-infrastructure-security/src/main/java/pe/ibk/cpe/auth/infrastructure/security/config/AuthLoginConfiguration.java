@@ -12,14 +12,14 @@ import pe.ibk.cpe.auth.domain.service.user.service.LoginCustomerService;
 import pe.ibk.cpe.auth.infrastructure.security.adapter.LoginCollaboratorAdapter;
 import pe.ibk.cpe.auth.infrastructure.security.adapter.LoginCustomerAdapter;
 import pe.ibk.cpe.dependencies.global.jwt.JwtProvider;
-import pe.ibk.cpe.dependencies.global.util.JsonLogUtil;
+import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
 
 @Configuration
 public class AuthLoginConfiguration {
 
     @Bean
-    public LoginCustomerPort loginCustomerPort(AuthenticationManager authenticationManager, JsonLogUtil jsonLogUtil, JwtProvider jwtProvider) {
-        return new LoginCustomerAdapter(authenticationManager, jsonLogUtil, jwtProvider);
+    public LoginCustomerPort loginCustomerPort(AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil, JwtProvider jwtProvider) {
+        return new LoginCustomerAdapter(authenticationManager, coreJsonUtil, jwtProvider);
     }
 
     @Bean
@@ -28,8 +28,8 @@ public class AuthLoginConfiguration {
     }
 
     @Bean
-    public LoginCollaboratorPort loginCollaboratorPort(AuthenticationManager authenticationManager, JsonLogUtil jsonLogUtil, JwtProvider jwtProvider) {
-        return new LoginCollaboratorAdapter(authenticationManager, jsonLogUtil, jwtProvider);
+    public LoginCollaboratorPort loginCollaboratorPort(AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil, JwtProvider jwtProvider) {
+        return new LoginCollaboratorAdapter(authenticationManager, coreJsonUtil, jwtProvider);
     }
 
     @Bean

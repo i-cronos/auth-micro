@@ -8,23 +8,23 @@ import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorResponse;
 import pe.ibk.cpe.auth.domain.service.user.port.outbound.LoginCollaboratorPort;
 import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.dependencies.global.jwt.JwtProvider;
-import pe.ibk.cpe.dependencies.global.util.JsonLogUtil;
+import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
 
 @Slf4j
 @AllArgsConstructor
 public class LoginCollaboratorAdapter implements LoginCollaboratorPort {
 
     private final AuthenticationManager authenticationManager;
-    private final JsonLogUtil jsonLogUtil;
+    private final CoreJsonUtil coreJsonUtil;
     private final JwtProvider jwtProvider;
 
     @Override
     public LoginCollaboratorResponse login(LoginCollaboratorRequest loginCollaboratorRequest) {
         CollaboratorUsernamePasswordAuthenticationToken request = new CollaboratorUsernamePasswordAuthenticationToken(loginCollaboratorRequest.getUsername(), loginCollaboratorRequest.getPassword());
-        log.info("Login collaborator request : {}", jsonLogUtil.toJson(request));
+        log.info("Login collaborator request : {}", coreJsonUtil.toJson(request));
 
         CollaboratorUsernamePasswordAuthenticationToken response = (CollaboratorUsernamePasswordAuthenticationToken) authenticationManager.authenticate(request);
-        log.info("Login collaborator response : {}", jsonLogUtil.toJson(response));
+        log.info("Login collaborator response : {}", coreJsonUtil.toJson(response));
 
         return LoginCollaboratorResponse.builder()
                 .token(jwtProvider.token(null))

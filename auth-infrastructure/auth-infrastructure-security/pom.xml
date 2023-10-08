@@ -45,6 +45,10 @@
             <groupId>pe.ibk.cpe</groupId>
             <artifactId>cpe-dependencies-global</artifactId>
         </dependency>
+        <dependency>
+            <groupId>pe.ibk.cpe</groupId>
+            <artifactId>cpe-dependencies-infrastructure</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

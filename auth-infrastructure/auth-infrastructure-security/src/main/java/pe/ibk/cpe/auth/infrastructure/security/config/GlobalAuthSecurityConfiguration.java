@@ -2,7 +2,6 @@ package pe.ibk.cpe.auth.infrastructure.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,11 +13,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
 import pe.ibk.cpe.auth.infrastructure.security.provider.CollaboratorAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.service.detail.UserDetailMapper;
+import pe.ibk.cpe.dependencies.infrastructure.security.CoreWardenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -56,16 +57,16 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    @Order(1)
     public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider customerAuthenticationProvider) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
+                .securityMatcher("/api/auth/customer/**")
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
-                .authenticationProvider(customerAuthenticationProvider)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.POST, "/api/auth/customer/**").permitAll();
                 })
+                .addFilterAfter(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
         System.out.println("Customer securityFilterChain : " + securityFilterChain.getFilters());
@@ -73,14 +74,15 @@ public class GlobalAuthSecurityConfiguration {
         return securityFilterChain;
     }
 
+
     @Bean
-    @Order(2)
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
+                .securityMatcher("/api/auth/collaborator/**")
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
-                .authenticationProvider(collaboratorAuthenticationProvider)
+                .addFilterAfter(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.POST, "/api/auth/collaborator/**").permitAll();
                 })
