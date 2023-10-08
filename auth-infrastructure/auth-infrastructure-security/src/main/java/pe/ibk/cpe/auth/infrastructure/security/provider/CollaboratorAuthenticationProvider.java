@@ -8,24 +8,24 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.service.detail.CustomerUserDetails;
 import pe.ibk.cpe.dependencies.global.exception.DomainException;
 
 @Slf4j
 @AllArgsConstructor
-public class CustomerAuthenticationProvider implements AuthenticationProvider {
-    private final UserDetailsService customerUserDetailsService;
+public class CollaboratorAuthenticationProvider implements AuthenticationProvider {
+    private final UserDetailsService collaboratorUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         try {
-            log.info("CustomerAuthenticationProvider");
+            log.info("CollaboratorAuthenticationProvider");
             String username = (String) authentication.getPrincipal();
             String password = (String) authentication.getCredentials();
 
-            CustomerUserDetails customerUserDetails = (CustomerUserDetails) customerUserDetailsService.loadUserByUsername(username);
+            CustomerUserDetails customerUserDetails = (CustomerUserDetails) collaboratorUserDetailsService.loadUserByUsername(username);
 
             boolean isMatched = passwordEncoder.matches(password, customerUserDetails.getPassword());
 
@@ -37,7 +37,7 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
                         .userMessage("Not valid")
                         .build());
 
-            return new CustomerUsernamePasswordAuthenticationToken(username, password, null);
+            return new CollaboratorUsernamePasswordAuthenticationToken(username, password, null);
 
         } catch (UsernameNotFoundException ex) {
             throw new DomainException(DomainException.Error.builder()
@@ -49,6 +49,6 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.isAssignableFrom(CustomerUsernamePasswordAuthenticationToken.class);
+        return authentication.isAssignableFrom(CollaboratorUsernamePasswordAuthenticationToken.class);
     }
 }

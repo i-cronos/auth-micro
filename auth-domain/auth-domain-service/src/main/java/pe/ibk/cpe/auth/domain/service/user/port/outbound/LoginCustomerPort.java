@@ -1,7 +1,8 @@
 package pe.ibk.cpe.auth.domain.service.user.port.outbound;
 
-import pe.ibk.cpe.auth.domain.core.user.entity.SystemUser;
+import pe.ibk.cpe.auth.domain.service.user.dto.LoginCustomerRequest;
+import pe.ibk.cpe.auth.domain.service.user.dto.LoginCustomerResponse;
 
 public interface LoginCustomerPort {
-    SystemUser login(SystemUser systemUser);
+    LoginCustomerResponse login(LoginCustomerRequest loginCustomerRequest);
 }

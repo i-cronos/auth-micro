@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.service;
+package pe.ibk.cpe.auth.infrastructure.security.service.detail;
 
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,0 +1,33 @@
+package pe.ibk.cpe.auth.infrastructure.security.adapter;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorRequest;
+import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorResponse;
+import pe.ibk.cpe.auth.domain.service.user.port.outbound.LoginCollaboratorPort;
+import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.dependencies.global.jwt.JwtProvider;
+import pe.ibk.cpe.dependencies.global.util.JsonLogUtil;
+
+@Slf4j
+@AllArgsConstructor
+public class LoginCollaboratorAdapter implements LoginCollaboratorPort {
+
+    private final AuthenticationManager authenticationManager;
+    private final JsonLogUtil jsonLogUtil;
+    private final JwtProvider jwtProvider;
+
+    @Override
+    public LoginCollaboratorResponse login(LoginCollaboratorRequest loginCollaboratorRequest) {
+        CollaboratorUsernamePasswordAuthenticationToken request = new CollaboratorUsernamePasswordAuthenticationToken(loginCollaboratorRequest.getUsername(), loginCollaboratorRequest.getPassword());
+        log.info("Login collaborator request : {}", jsonLogUtil.toJson(request));
+
+        CollaboratorUsernamePasswordAuthenticationToken response = (CollaboratorUsernamePasswordAuthenticationToken) authenticationManager.authenticate(request);
+        log.info("Login collaborator response : {}", jsonLogUtil.toJson(response));
+
+        return LoginCollaboratorResponse.builder()
+                .token(jwtProvider.token(null))
+                .build();
+    }
+}

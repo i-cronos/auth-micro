@@ -17,7 +17,7 @@ public class CustomerLoginController {
 
     @PostMapping("/v1.0/login")
     public ResponseEntity<LoginCustomerResponse> login(@RequestBody LoginCustomerRequest loginCustomerRequest) {
-        log.info("Login request : {}",loginCustomerRequest);
+        log.info("Login customer request : {}", loginCustomerRequest);
         LoginCustomerResponse loginCustomerResponse = loginCustomerUseCase.login(loginCustomerRequest);
 
         return ResponseEntity.ok(loginCustomerResponse);
