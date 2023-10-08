@@ -1,0 +1,7 @@
+/.idea/
+/auth-application/target/
+/auth-container/target/
+/auth-domain/auth-domain-core/target/
+/auth-domain/auth-domain-service/target/
+/auth-infrastructure/auth-infrastructure-database/target/
+/auth-infrastructure/auth-infrastructure-security/target/
