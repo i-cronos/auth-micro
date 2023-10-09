@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,12 +31,6 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
     public UserDetailsService customerUserDetailsService(UserRepository userRepository) {
         return new CustomerUserDetailsService(userRepository, new UserDetailMapper());
     }
@@ -47,17 +41,31 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider customerAuthenticationProvider(UserDetailsService customerUserDetailsService, PasswordEncoder bcryptpasswordEncoder) {
+    public AuthenticationProvider customerAuthenticationProvider(UserDetailsService customerUserDetailsService,
+                                                                 PasswordEncoder bcryptpasswordEncoder) {
         return new CustomerAuthenticationProvider(customerUserDetailsService, bcryptpasswordEncoder);
     }
 
     @Bean
-    public AuthenticationProvider collaboratorAuthenticationProvider(UserDetailsService collaboratorUserDetailsService, PasswordEncoder bcryptpasswordEncoder) {
+    public AuthenticationProvider collaboratorAuthenticationProvider(UserDetailsService collaboratorUserDetailsService,
+                                                                     PasswordEncoder bcryptpasswordEncoder) {
         return new CollaboratorAuthenticationProvider(collaboratorUserDetailsService, bcryptpasswordEncoder);
     }
 
     @Bean
-    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider customerAuthenticationProvider) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
+                                                       AuthenticationProvider customerAuthenticationProvider,
+                                                       AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(customerAuthenticationProvider);
+        authenticationManagerBuilder.authenticationProvider(collaboratorAuthenticationProvider);
+
+        return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity,
+                                                           AuthenticationProvider customerAuthenticationProvider) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
                 .securityMatcher("/api/auth/customer/**")
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
@@ -76,7 +84,8 @@ public class GlobalAuthSecurityConfiguration {
 
 
     @Bean
-    public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
+    public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
+                                                               AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
                 .securityMatcher("/api/auth/collaborator/**")
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
