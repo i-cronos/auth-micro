@@ -1,9 +1,5 @@
 package pe.ibk.cpe.auth.infrastructure.security.filter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +13,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginRequest;
 import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
-
-import java.io.IOException;
 
 @Slf4j
 public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -38,12 +32,6 @@ public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthen
 
     public CustomerUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher, AuthenticationManager authenticationManager) {
         super(requiresAuthenticationRequestMatcher, authenticationManager);
-    }
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.info("Customer Filter ....");
-        super.doFilter(request, response, chain);
     }
 
     @Override
