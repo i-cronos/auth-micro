@@ -18,19 +18,8 @@ import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
 public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final CoreJsonUtil coreJsonUtil = new CoreJsonUtil();
 
-    public CustomerUsernamePasswordAuthenticationFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
-    }
-
-    public CustomerUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
-        super(requiresAuthenticationRequestMatcher);
-    }
-
-    public CustomerUsernamePasswordAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
-        super(defaultFilterProcessesUrl, authenticationManager);
-    }
-
-    public CustomerUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher, AuthenticationManager authenticationManager) {
+    public CustomerUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher,
+                                                        AuthenticationManager authenticationManager) {
         super(requiresAuthenticationRequestMatcher, authenticationManager);
     }
 
