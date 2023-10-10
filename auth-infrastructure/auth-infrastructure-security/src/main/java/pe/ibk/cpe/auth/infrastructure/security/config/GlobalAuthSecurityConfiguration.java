@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -57,8 +56,6 @@ public class GlobalAuthSecurityConfiguration {
         return new CollaboratorAuthenticationProvider(collaboratorUserDetailsService, bcryptpasswordEncoder);
     }
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
                                                        AuthenticationProvider customerAuthenticationProvider,
@@ -74,37 +71,31 @@ public class GlobalAuthSecurityConfiguration {
     @Bean
     public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
-                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
+                .csrf(csrfConf -> csrfConf.disable())
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(basicConfig -> basicConfig.disable())
                 .securityMatcher("/api/auth/customer/**")
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(buildCustomerUsernamePasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
-        System.out.println("Customer securityFilterChain : " + securityFilterChain.getFilters());
-
         return securityFilterChain;
     }
-
 
     @Bean
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
                                                                AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
                 .securityMatcher("/api/auth/collaborator/**")
-                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable())
+                .csrf(csrfConf -> csrfConf.disable())
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(basicConfig -> basicConfig.disable())
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new CollaborartorUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
-        System.out.println("Collaborator securityFilterChain : " + securityFilterChain.getFilters());
-
         return securityFilterChain;
     }
-
 
     private CustomerUsernamePasswordAuthenticationFilter buildCustomerUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager);
