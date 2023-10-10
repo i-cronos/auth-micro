@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.service.detail.CustomerUserDetails;
 import pe.ibk.cpe.dependencies.global.exception.DomainException;
 

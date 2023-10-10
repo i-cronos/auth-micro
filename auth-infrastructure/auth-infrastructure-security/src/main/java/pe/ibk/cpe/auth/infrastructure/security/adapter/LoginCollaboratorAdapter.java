@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorRequest;
 import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorResponse;
 import pe.ibk.cpe.auth.domain.service.user.port.outbound.LoginCollaboratorPort;
-import pe.ibk.cpe.auth.infrastructure.security.provider.authentication.CollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.dependencies.global.jwt.JwtProvider;
 import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
 
