@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginRequest;
-import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 @Slf4j
 public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {

@@ -7,8 +7,8 @@ import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorRequest;
 import pe.ibk.cpe.auth.domain.service.user.dto.LoginCollaboratorResponse;
 import pe.ibk.cpe.auth.domain.service.user.port.outbound.LoginCollaboratorPort;
 import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
-import pe.ibk.cpe.dependencies.global.jwt.JwtProvider;
-import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.jwt.JwtProvider;
+import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 @Slf4j
 @AllArgsConstructor

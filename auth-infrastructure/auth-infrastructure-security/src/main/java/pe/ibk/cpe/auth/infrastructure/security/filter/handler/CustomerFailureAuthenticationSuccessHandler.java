@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import pe.ibk.cpe.dependencies.global.exception.error.UserError;
-import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.exception.error.UserError;
+import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 import java.io.IOException;
 

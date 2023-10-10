@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginResponse;
-import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 import java.io.IOException;
 import java.util.UUID;
