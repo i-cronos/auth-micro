@@ -30,7 +30,7 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
         log.info("is matched : {}", isMatched);
 
         if (!isMatched)
-            throw new BadCredentialsException("Not valid password");
+            throw new BadCredentialsException("No valid password");
 
         return new CustomerUsernamePasswordAuthenticationToken(username, password, null);
 

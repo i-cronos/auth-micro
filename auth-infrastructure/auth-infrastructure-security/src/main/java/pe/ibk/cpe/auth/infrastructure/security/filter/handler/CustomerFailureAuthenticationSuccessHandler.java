@@ -18,7 +18,7 @@ public class CustomerFailureAuthenticationSuccessHandler implements Authenticati
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.info("CustomerFailureAuthenticationSuccessHandler");
+        log.info("CustomerFailureAuthenticationSuccessHandler, error : {} ", exception.getMessage());
 
         UserError userError = UserError.builder()
                 .status(HttpStatus.UNAUTHORIZED.name())

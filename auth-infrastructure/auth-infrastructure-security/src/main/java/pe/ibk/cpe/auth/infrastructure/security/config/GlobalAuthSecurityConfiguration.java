@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -56,6 +57,8 @@ public class GlobalAuthSecurityConfiguration {
         return new CollaboratorAuthenticationProvider(collaboratorUserDetailsService, bcryptpasswordEncoder);
     }
 
+
+
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity,
                                                        AuthenticationProvider customerAuthenticationProvider,
@@ -63,6 +66,7 @@ public class GlobalAuthSecurityConfiguration {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(customerAuthenticationProvider);
         authenticationManagerBuilder.authenticationProvider(collaboratorAuthenticationProvider);
+        authenticationManagerBuilder.parentAuthenticationManager(null);
 
         return authenticationManagerBuilder.build();
     }

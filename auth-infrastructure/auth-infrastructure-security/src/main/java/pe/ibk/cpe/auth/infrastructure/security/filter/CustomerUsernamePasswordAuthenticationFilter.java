@@ -13,16 +13,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginRequest;
 import pe.ibk.cpe.dependencies.global.util.CoreJsonUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
 
 @Slf4j
 public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -54,7 +50,9 @@ public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthen
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("Customer auth Filter ....");
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthRequest(request);
-        //this.setDetails(request, usernamePasswordAuthenticationToken);
+
+        this.setDetails(request, usernamePasswordAuthenticationToken);
+
         Authentication authenticationResponse = this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
 
         log.info("authenticationResponse : {}", authenticationResponse.getPrincipal());
@@ -66,25 +64,14 @@ public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthen
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
 
-
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) {
-        InputStream body = null;
         try {
-            body = request.getInputStream();
-            CustomerLoginRequest customerLoginRequest = coreJsonUtil.fromInputStream(body, CustomerLoginRequest.class);
+            CustomerLoginRequest customerLoginRequest = coreJsonUtil.fromInputStream(request.getInputStream(), CustomerLoginRequest.class);
 
             return new CustomerUsernamePasswordAuthenticationToken(customerLoginRequest.getUsername(), customerLoginRequest.getPassword());
         } catch (Exception ex) {
             log.error("Not get request body");
             throw new UsernameNotFoundException("Cannot ready the request body");
-        } finally {
-            if (Objects.nonNull(body)) {
-                try {
-                    body.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
 
     }
