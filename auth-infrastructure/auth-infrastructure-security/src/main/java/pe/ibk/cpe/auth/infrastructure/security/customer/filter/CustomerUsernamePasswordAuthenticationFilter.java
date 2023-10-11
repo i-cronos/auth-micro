@@ -50,7 +50,6 @@ public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthen
             log.error("Not get request body");
             throw new UsernameNotFoundException("Cannot ready the request body");
         }
-
     }
 
 }
