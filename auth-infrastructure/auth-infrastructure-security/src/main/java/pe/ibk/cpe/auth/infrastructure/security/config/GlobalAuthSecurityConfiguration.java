@@ -15,14 +15,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
-import pe.ibk.cpe.auth.infrastructure.security.filter.CollaborartorUsernamePasswordAuthenticationFilter;
-import pe.ibk.cpe.auth.infrastructure.security.filter.CustomerUsernamePasswordAuthenticationFilter;
-import pe.ibk.cpe.auth.infrastructure.security.filter.handler.CustomerAuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.filter.handler.CustomerFailureAuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.provider.CollaboratorAuthenticationProvider;
-import pe.ibk.cpe.auth.infrastructure.security.provider.CustomerAuthenticationProvider;
-import pe.ibk.cpe.auth.infrastructure.security.service.CustomerUserDetailsService;
-import pe.ibk.cpe.auth.infrastructure.security.service.detail.UserDetailMapper;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.CollaboratorUsernamePasswordAuthenticationFilter;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorFailureAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.CustomerUsernamePasswordAuthenticationFilter;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerFailureAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
+import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
+import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
+import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
 import pe.ibk.cpe.dependencies.infrastructure.security.CoreWardenFilter;
 
 @Configuration
@@ -36,12 +38,12 @@ public class GlobalAuthSecurityConfiguration {
 
     @Bean
     public UserDetailsService customerUserDetailsService(UserRepository userRepository) {
-        return new CustomerUserDetailsService(userRepository, new UserDetailMapper());
+        return new CustomerUserDetailsService(userRepository, new CustomerUserDetailMapper());
     }
 
     @Bean
     public UserDetailsService collaboratorUserDetailsService(UserRepository userRepository) {
-        return new CustomerUserDetailsService(userRepository, new UserDetailMapper());
+        return new CustomerUserDetailsService(userRepository, new CustomerUserDetailMapper());
     }
 
     @Bean
@@ -76,7 +78,7 @@ public class GlobalAuthSecurityConfiguration {
                 .httpBasic(basicConfig -> basicConfig.disable())
                 .securityMatcher("/api/auth/customer/**")
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildCustomerUsernamePasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(buildCustomerAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
         return securityFilterChain;
@@ -84,23 +86,31 @@ public class GlobalAuthSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
-                                                               AuthenticationProvider collaboratorAuthenticationProvider) throws Exception {
+                                                               AuthenticationManager authenticationManager) throws Exception {
         SecurityFilterChain securityFilterChain = httpSecurity
                 .securityMatcher("/api/auth/collaborator/**")
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new CollaborartorUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(buildCollaboratorAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .build();
 
         return securityFilterChain;
     }
 
-    private CustomerUsernamePasswordAuthenticationFilter buildCustomerUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private CustomerUsernamePasswordAuthenticationFilter buildCustomerAuthenticationFilter(AuthenticationManager authenticationManager) {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager);
         filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler());
         filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler());
+
+        return filter;
+    }
+
+    private CollaboratorUsernamePasswordAuthenticationFilter buildCollaboratorAuthenticationFilter(AuthenticationManager authenticationManager) {
+        CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager);
+        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler());
 
         return filter;
     }

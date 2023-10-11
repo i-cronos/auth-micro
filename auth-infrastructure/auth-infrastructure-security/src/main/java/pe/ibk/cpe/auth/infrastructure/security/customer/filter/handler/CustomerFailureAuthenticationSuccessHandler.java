@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.filter.handler;
+package pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

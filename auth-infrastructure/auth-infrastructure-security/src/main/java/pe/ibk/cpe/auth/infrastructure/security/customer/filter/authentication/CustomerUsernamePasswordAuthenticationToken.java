@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.filter.authentication;
+package pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

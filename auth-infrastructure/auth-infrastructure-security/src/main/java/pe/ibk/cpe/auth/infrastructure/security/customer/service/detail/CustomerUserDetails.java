@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.service.detail;
+package pe.ibk.cpe.auth.infrastructure.security.customer.service.detail;
 
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Setter
-public class CollaboratorUserDetails implements UserDetails {
+public class CustomerUserDetails implements UserDetails {
     private String username;
     private String password;
     private List<String> roles;

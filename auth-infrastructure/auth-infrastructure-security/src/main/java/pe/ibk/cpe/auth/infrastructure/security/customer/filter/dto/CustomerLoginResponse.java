@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.filter.dto;
+package pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CustomerLoginResponse {
-    String token;
+    private String token;
 }

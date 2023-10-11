@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.filter.handler;
+package pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginResponse;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginResponse;
 import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 import java.io.IOException;

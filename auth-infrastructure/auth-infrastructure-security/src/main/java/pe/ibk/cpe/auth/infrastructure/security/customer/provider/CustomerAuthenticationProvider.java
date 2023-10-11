@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.provider;
+package pe.ibk.cpe.auth.infrastructure.security.customer.provider;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +8,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
-import pe.ibk.cpe.auth.infrastructure.security.service.detail.CustomerUserDetails;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetails;
 
 @Slf4j
 @AllArgsConstructor

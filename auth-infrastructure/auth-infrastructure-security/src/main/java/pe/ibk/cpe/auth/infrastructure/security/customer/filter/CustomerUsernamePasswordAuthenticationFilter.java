@@ -1,4 +1,4 @@
-package pe.ibk.cpe.auth.infrastructure.security.filter;
+package pe.ibk.cpe.auth.infrastructure.security.customer.filter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,8 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import pe.ibk.cpe.auth.infrastructure.security.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
-import pe.ibk.cpe.auth.infrastructure.security.filter.dto.CustomerLoginRequest;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginRequest;
 import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 @Slf4j
