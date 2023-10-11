@@ -16,11 +16,13 @@ import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 @Slf4j
 public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final CoreJsonUtil coreJsonUtil = new CoreJsonUtil();
+    private final CoreJsonUtil coreJsonUtil;
 
     public CollaboratorUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher,
-                                                            AuthenticationManager authenticationManager) {
+                                                            AuthenticationManager authenticationManager,
+                                                            CoreJsonUtil coreJsonUtil) {
         super(requiresAuthenticationRequestMatcher, authenticationManager);
+        this.coreJsonUtil = coreJsonUtil;
     }
 
     @Override
@@ -50,7 +52,6 @@ public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAu
             log.error("Not get request body");
             throw new UsernameNotFoundException("Cannot ready the request body");
         }
-
     }
 
 }

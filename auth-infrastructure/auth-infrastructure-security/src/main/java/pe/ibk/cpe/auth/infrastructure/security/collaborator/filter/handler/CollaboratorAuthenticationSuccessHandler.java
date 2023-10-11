@@ -14,7 +14,11 @@ import java.util.UUID;
 
 @Slf4j
 public class CollaboratorAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    private final CoreJsonUtil coreJsonUtil = new CoreJsonUtil();
+    private final CoreJsonUtil coreJsonUtil;
+
+    public CollaboratorAuthenticationSuccessHandler(CoreJsonUtil coreJsonUtil) {
+        this.coreJsonUtil = coreJsonUtil;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

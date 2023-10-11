@@ -16,11 +16,13 @@ import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 
 @Slf4j
 public class CustomerUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final CoreJsonUtil coreJsonUtil = new CoreJsonUtil();
+    private final CoreJsonUtil coreJsonUtil;
 
     public CustomerUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher,
-                                                        AuthenticationManager authenticationManager) {
+                                                        AuthenticationManager authenticationManager,
+                                                        CoreJsonUtil coreJsonUtil) {
         super(requiresAuthenticationRequestMatcher, authenticationManager);
+        this.coreJsonUtil = coreJsonUtil;
     }
 
     @Override

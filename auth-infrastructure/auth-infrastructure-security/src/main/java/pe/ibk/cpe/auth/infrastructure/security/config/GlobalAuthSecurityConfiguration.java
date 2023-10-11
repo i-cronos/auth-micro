@@ -25,11 +25,17 @@ import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.Collaborato
 import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
+import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
 import pe.ibk.cpe.dependencies.infrastructure.security.CoreWardenFilter;
 
 @Configuration
 @EnableWebSecurity
 public class GlobalAuthSecurityConfiguration {
+
+    @Bean
+    public CoreJsonUtil coreJsonUtil() {
+        return new CoreJsonUtil();
+    }
 
     @Bean
     public PasswordEncoder bcryptpasswordEncoder() {
@@ -71,48 +77,39 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
-        SecurityFilterChain securityFilterChain = httpSecurity
+    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil) throws Exception {
+        CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, coreJsonUtil);
+        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(coreJsonUtil));
+        filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(coreJsonUtil));
+        filter.setAuthenticationManager(null);
+
+        return httpSecurity
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
                 .securityMatcher("/api/auth/customer/**")
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildCustomerAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
-        return securityFilterChain;
     }
 
     @Bean
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
-                                                               AuthenticationManager authenticationManager) throws Exception {
-        SecurityFilterChain securityFilterChain = httpSecurity
+                                                               AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil) throws Exception {
+
+        CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, coreJsonUtil);
+        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(coreJsonUtil));
+        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(coreJsonUtil));
+
+        return httpSecurity
                 .securityMatcher("/api/auth/collaborator/**")
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
                 .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(buildCollaboratorAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-
-        return securityFilterChain;
     }
 
-    private CustomerUsernamePasswordAuthenticationFilter buildCustomerAuthenticationFilter(AuthenticationManager authenticationManager) {
-        CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager);
-        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler());
-        filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler());
-
-        return filter;
-    }
-
-    private CollaboratorUsernamePasswordAuthenticationFilter buildCollaboratorAuthenticationFilter(AuthenticationManager authenticationManager) {
-        CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager);
-        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler());
-        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler());
-
-        return filter;
-    }
 
 }

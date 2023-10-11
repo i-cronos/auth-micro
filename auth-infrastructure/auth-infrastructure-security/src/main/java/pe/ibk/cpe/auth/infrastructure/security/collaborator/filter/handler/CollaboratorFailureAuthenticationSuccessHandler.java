@@ -14,7 +14,11 @@ import java.io.IOException;
 
 @Slf4j
 public class CollaboratorFailureAuthenticationSuccessHandler implements AuthenticationFailureHandler {
-    private final CoreJsonUtil coreJsonUtil = new CoreJsonUtil();
+    private final CoreJsonUtil coreJsonUtil;
+
+    public CollaboratorFailureAuthenticationSuccessHandler(CoreJsonUtil coreJsonUtil) {
+        this.coreJsonUtil = coreJsonUtil;
+    }
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
