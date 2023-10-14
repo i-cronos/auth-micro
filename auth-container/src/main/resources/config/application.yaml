@@ -1,0 +1,23 @@
+token:
+  security:
+    config:
+      general:
+        issuer: CPE
+        key: LostToken!3.141516
+      customs:
+        - token-type: USER
+          ttl: 10
+          refresh-ttl: 20
+          subject: System
+        - token-type: CUSTOMER
+          ttl: 5
+          refresh-ttl: 10
+          subject: System
+        - token-type: INTERNAL
+          ttl: 5
+          refresh-ttl: 10
+          subject: System
+        - token-type: THIRD
+          ttl: 5
+          refresh-ttl: 10
+          subject: System

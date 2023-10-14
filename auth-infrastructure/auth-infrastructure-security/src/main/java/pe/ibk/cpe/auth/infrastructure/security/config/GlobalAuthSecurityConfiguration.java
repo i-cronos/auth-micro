@@ -18,15 +18,19 @@ import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.CollaboratorUsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorFailureAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.CustomerUsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerFailureAuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 import pe.ibk.cpe.dependencies.infrastructure.security.filter.CoreWardenFilter;
+import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenConfiguration;
+import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
+
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +39,21 @@ public class GlobalAuthSecurityConfiguration {
     @Bean
     public JsonUtil jsonUtil() {
         return new JsonUtil();
+    }
+
+    @Bean
+    public TokenConfiguration tokenConfiguration() {
+        return new TokenConfiguration();
+    }
+
+    @Bean
+    public TokenCreationService tokenCreationService(TokenConfiguration tokenConfiguration) {
+        System.out.println(" 0. :::::::::::: "+tokenConfiguration);
+        if(Objects.nonNull(tokenConfiguration)){
+            System.out.println(" 1. ::::::::::::::::::::::: "+tokenConfiguration.getGeneral());
+            System.out.println(" 2. ::::::::::::::::::::::: "+tokenConfiguration.getCustoms());
+        }
+        return new TokenCreationService(tokenConfiguration);
     }
 
     @Bean
@@ -77,9 +96,12 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager, JsonUtil jsonUtil) throws Exception {
+    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity,
+                                                           AuthenticationManager authenticationManager,
+                                                           TokenCreationService tokenCreationService,
+                                                           JsonUtil jsonUtil) throws Exception {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, jsonUtil);
-        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
         filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(jsonUtil));
         filter.setAuthenticationManager(null);
 
@@ -88,17 +110,19 @@ public class GlobalAuthSecurityConfiguration {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
                 .securityMatcher("/api/auth/customer/**")
-                .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CoreWardenFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
-                                                               AuthenticationManager authenticationManager, JsonUtil jsonUtil) throws Exception {
+                                                               AuthenticationManager authenticationManager,
+                                                               TokenCreationService tokenCreationService,
+                                                               JsonUtil jsonUtil) throws Exception {
 
         CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, jsonUtil);
-        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
         filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(jsonUtil));
 
         return httpSecurity
@@ -106,10 +130,9 @@ public class GlobalAuthSecurityConfiguration {
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
-                .addFilterBefore(new CoreWardenFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new CoreWardenFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
 }
