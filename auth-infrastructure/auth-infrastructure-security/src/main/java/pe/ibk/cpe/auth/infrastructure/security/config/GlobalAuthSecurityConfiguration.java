@@ -96,7 +96,6 @@ public class GlobalAuthSecurityConfiguration {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, jsonUtil);
         filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
         filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(jsonUtil));
-        filter.setAuthenticationManager(null);
 
         return httpSecurity
                 .csrf(csrfConf -> csrfConf.disable())
