@@ -8,16 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import pe.ibk.cpe.dependencies.common.exception.error.UserError;
-import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 
 import java.io.IOException;
 
 @Slf4j
 public class CollaboratorFailureAuthenticationSuccessHandler implements AuthenticationFailureHandler {
-    private final CoreJsonUtil coreJsonUtil;
+    private final JsonUtil jsonUtil;
 
-    public CollaboratorFailureAuthenticationSuccessHandler(CoreJsonUtil coreJsonUtil) {
-        this.coreJsonUtil = coreJsonUtil;
+    public CollaboratorFailureAuthenticationSuccessHandler(JsonUtil jsonUtil) {
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CollaboratorFailureAuthenticationSuccessHandler implements Authenti
                 .errorCode("0000")
                 .build();
 
-        String json = coreJsonUtil.toJson(userError);
+        String json = jsonUtil.toJson(userError);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

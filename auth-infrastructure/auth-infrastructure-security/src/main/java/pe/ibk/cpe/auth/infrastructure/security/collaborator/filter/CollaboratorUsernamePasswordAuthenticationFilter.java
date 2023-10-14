@@ -12,17 +12,17 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginRequest;
-import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 
 @Slf4j
 public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final CoreJsonUtil coreJsonUtil;
+    private final JsonUtil jsonUtil;
 
     public CollaboratorUsernamePasswordAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher,
                                                             AuthenticationManager authenticationManager,
-                                                            CoreJsonUtil coreJsonUtil) {
+                                                            JsonUtil jsonUtil) {
         super(requiresAuthenticationRequestMatcher, authenticationManager);
-        this.coreJsonUtil = coreJsonUtil;
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAu
 
     private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) {
         try {
-            CustomerLoginRequest customerLoginRequest = coreJsonUtil.fromInputStream(request.getInputStream(), CustomerLoginRequest.class);
+            CustomerLoginRequest customerLoginRequest = jsonUtil.fromInputStream(request.getInputStream(), CustomerLoginRequest.class);
 
             return new CollaboratorUsernamePasswordAuthenticationToken(customerLoginRequest.getUsername(), customerLoginRequest.getPassword());
         } catch (Exception ex) {

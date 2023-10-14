@@ -25,16 +25,16 @@ import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.Collaborato
 import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
-import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
-import pe.ibk.cpe.dependencies.infrastructure.security.CoreWardenFilter;
+import pe.ibk.cpe.dependencies.common.util.JsonUtil;
+import pe.ibk.cpe.dependencies.infrastructure.security.filter.CoreWardenFilter;
 
 @Configuration
 @EnableWebSecurity
 public class GlobalAuthSecurityConfiguration {
 
     @Bean
-    public CoreJsonUtil coreJsonUtil() {
-        return new CoreJsonUtil();
+    public JsonUtil jsonUtil() {
+        return new JsonUtil();
     }
 
     @Bean
@@ -77,10 +77,10 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil) throws Exception {
-        CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, coreJsonUtil);
-        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(coreJsonUtil));
-        filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(coreJsonUtil));
+    public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager, JsonUtil jsonUtil) throws Exception {
+        CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, jsonUtil);
+        filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(jsonUtil));
         filter.setAuthenticationManager(null);
 
         return httpSecurity
@@ -95,11 +95,11 @@ public class GlobalAuthSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
-                                                               AuthenticationManager authenticationManager, CoreJsonUtil coreJsonUtil) throws Exception {
+                                                               AuthenticationManager authenticationManager, JsonUtil jsonUtil) throws Exception {
 
-        CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, coreJsonUtil);
-        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(coreJsonUtil));
-        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(coreJsonUtil));
+        CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, jsonUtil);
+        filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(jsonUtil));
 
         return httpSecurity
                 .securityMatcher("/api/auth/collaborator/**")

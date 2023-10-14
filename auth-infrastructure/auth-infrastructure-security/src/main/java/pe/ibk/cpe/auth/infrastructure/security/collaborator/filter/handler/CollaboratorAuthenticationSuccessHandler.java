@@ -7,17 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.dto.CollaboratorLoginResponse;
-import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
 public class CollaboratorAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    private final CoreJsonUtil coreJsonUtil;
+    private final JsonUtil jsonUtil;
 
-    public CollaboratorAuthenticationSuccessHandler(CoreJsonUtil coreJsonUtil) {
-        this.coreJsonUtil = coreJsonUtil;
+    public CollaboratorAuthenticationSuccessHandler(JsonUtil jsonUtil) {
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class CollaboratorAuthenticationSuccessHandler implements AuthenticationS
         CollaboratorLoginResponse collaboratorLoginResponse = new CollaboratorLoginResponse();
         collaboratorLoginResponse.setToken(UUID.randomUUID().toString());
 
-        String json = coreJsonUtil.toJson(collaboratorLoginResponse);
+        String json = jsonUtil.toJson(collaboratorLoginResponse);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

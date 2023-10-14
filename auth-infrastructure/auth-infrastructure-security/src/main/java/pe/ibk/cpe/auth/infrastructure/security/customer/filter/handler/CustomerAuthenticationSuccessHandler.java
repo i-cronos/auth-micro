@@ -7,17 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginResponse;
-import pe.ibk.cpe.dependencies.common.util.CoreJsonUtil;
+import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
 public class CustomerAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-    private final CoreJsonUtil coreJsonUtil;
+    private final JsonUtil jsonUtil;
 
-    public CustomerAuthenticationSuccessHandler(CoreJsonUtil coreJsonUtil) {
-        this.coreJsonUtil = coreJsonUtil;
+    public CustomerAuthenticationSuccessHandler(JsonUtil jsonUtil) {
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class CustomerAuthenticationSuccessHandler implements AuthenticationSucce
         CustomerLoginResponse customerLoginResponse = new CustomerLoginResponse();
         customerLoginResponse.setToken(UUID.randomUUID().toString());
 
-        String json = coreJsonUtil.toJson(customerLoginResponse);
+        String json = jsonUtil.toJson(customerLoginResponse);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
