@@ -30,8 +30,6 @@ import pe.ibk.cpe.dependencies.infrastructure.security.filter.CoreWardenFilter;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenConfiguration;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
 
-import java.util.Objects;
-
 @Configuration
 @EnableWebSecurity
 public class GlobalAuthSecurityConfiguration {
@@ -48,11 +46,6 @@ public class GlobalAuthSecurityConfiguration {
 
     @Bean
     public TokenCreationService tokenCreationService(TokenConfiguration tokenConfiguration) {
-        System.out.println(" 0. :::::::::::: "+tokenConfiguration);
-        if(Objects.nonNull(tokenConfiguration)){
-            System.out.println(" 1. ::::::::::::::::::::::: "+tokenConfiguration.getGeneral());
-            System.out.println(" 2. ::::::::::::::::::::::: "+tokenConfiguration.getCustoms());
-        }
         return new TokenCreationService(tokenConfiguration);
     }
 
