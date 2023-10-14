@@ -18,12 +18,12 @@ import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.CollaboratorUsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.security.common.configuration.AppSecurityConfiguration;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorFailureAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationFailureHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.common.filter.PerimeterFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.CustomerUsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
-import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerFailureAuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationFailureHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
@@ -109,7 +109,7 @@ public class GlobalAuthSecurityConfiguration {
                                                            JsonUtil jsonUtil) throws Exception {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, jsonUtil);
         filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
-        filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationFailureHandler(new CustomerAuthenticationFailureHandler(jsonUtil));
 
         return httpSecurity
                 .securityMatcher(appSecurityConfiguration.getCustomerPath())
@@ -130,7 +130,7 @@ public class GlobalAuthSecurityConfiguration {
 
         CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, jsonUtil);
         filter.setAuthenticationSuccessHandler(new CollaboratorAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
-        filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(jsonUtil));
+        filter.setAuthenticationFailureHandler(new CollaboratorAuthenticationFailureHandler(jsonUtil));
 
         return httpSecurity
                 .securityMatcher(appSecurityConfiguration.getCollaboratorPath())

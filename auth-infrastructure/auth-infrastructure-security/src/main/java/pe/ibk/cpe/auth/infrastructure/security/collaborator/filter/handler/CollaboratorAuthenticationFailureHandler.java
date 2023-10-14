@@ -13,10 +13,10 @@ import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 import java.io.IOException;
 
 @Slf4j
-public class CollaboratorFailureAuthenticationSuccessHandler implements AuthenticationFailureHandler {
+public class CollaboratorAuthenticationFailureHandler implements AuthenticationFailureHandler {
     private final JsonUtil jsonUtil;
 
-    public CollaboratorFailureAuthenticationSuccessHandler(JsonUtil jsonUtil) {
+    public CollaboratorAuthenticationFailureHandler(JsonUtil jsonUtil) {
         this.jsonUtil = jsonUtil;
     }
 
