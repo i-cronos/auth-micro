@@ -9,7 +9,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginResponse;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
-import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenType;
+import pe.ibk.cpe.dependencies.infrastructure.security.token.types.TokenType;
 
 import java.io.IOException;
 

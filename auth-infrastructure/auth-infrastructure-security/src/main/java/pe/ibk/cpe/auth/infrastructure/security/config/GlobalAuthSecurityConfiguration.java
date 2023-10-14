@@ -16,9 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.CollaboratorUsernamePasswordAuthenticationFilter;
+import pe.ibk.cpe.auth.infrastructure.security.common.configuration.AppSecurityConfiguration;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorFailureAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
+import pe.ibk.cpe.auth.infrastructure.security.common.filter.PerimeterFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.CustomerUsernamePasswordAuthenticationFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerFailureAuthenticationSuccessHandler;
@@ -26,9 +28,9 @@ import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthent
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
-import pe.ibk.cpe.dependencies.infrastructure.security.filter.CoreWardenFilter;
-import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenConfiguration;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
+import pe.ibk.cpe.dependencies.infrastructure.security.token.configuration.TokenGeneralConfiguration;
+import pe.ibk.cpe.dependencies.infrastructure.security.token.configuration.TokenGroupConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -40,13 +42,24 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public TokenConfiguration tokenConfiguration() {
-        return new TokenConfiguration();
+    public TokenGeneralConfiguration tokenGeneralConfiguration() {
+        return new TokenGeneralConfiguration();
     }
 
     @Bean
-    public TokenCreationService tokenCreationService(TokenConfiguration tokenConfiguration) {
-        return new TokenCreationService(tokenConfiguration);
+    public TokenGroupConfiguration tokenGroupConfiguration() {
+        return new TokenGroupConfiguration();
+    }
+
+    @Bean
+    public AppSecurityConfiguration appSecurityConfiguration() {
+        return new AppSecurityConfiguration();
+    }
+
+    @Bean
+    public TokenCreationService tokenCreationService(TokenGeneralConfiguration tokenGeneralConfiguration,
+                                                     TokenGroupConfiguration tokenGroupConfiguration) {
+        return new TokenCreationService(tokenGeneralConfiguration, tokenGroupConfiguration);
     }
 
     @Bean
@@ -92,17 +105,18 @@ public class GlobalAuthSecurityConfiguration {
     public SecurityFilterChain customerSecurityFilterChain(HttpSecurity httpSecurity,
                                                            AuthenticationManager authenticationManager,
                                                            TokenCreationService tokenCreationService,
+                                                           AppSecurityConfiguration appSecurityConfiguration,
                                                            JsonUtil jsonUtil) throws Exception {
         CustomerUsernamePasswordAuthenticationFilter filter = new CustomerUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/customer/v1.0/login"), authenticationManager, jsonUtil);
         filter.setAuthenticationSuccessHandler(new CustomerAuthenticationSuccessHandler(tokenCreationService, jsonUtil));
         filter.setAuthenticationFailureHandler(new CustomerFailureAuthenticationSuccessHandler(jsonUtil));
 
         return httpSecurity
+                .securityMatcher(appSecurityConfiguration.getCustomerPath())
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
-                .securityMatcher("/api/auth/customer/**")
-                .addFilterBefore(new CoreWardenFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new PerimeterFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -111,6 +125,7 @@ public class GlobalAuthSecurityConfiguration {
     public SecurityFilterChain collaboratorSecurityFilterChain(HttpSecurity httpSecurity,
                                                                AuthenticationManager authenticationManager,
                                                                TokenCreationService tokenCreationService,
+                                                               AppSecurityConfiguration appSecurityConfiguration,
                                                                JsonUtil jsonUtil) throws Exception {
 
         CollaboratorUsernamePasswordAuthenticationFilter filter = new CollaboratorUsernamePasswordAuthenticationFilter(new AntPathRequestMatcher("/api/auth/collaborator/v1.0/login"), authenticationManager, jsonUtil);
@@ -118,11 +133,11 @@ public class GlobalAuthSecurityConfiguration {
         filter.setAuthenticationFailureHandler(new CollaboratorFailureAuthenticationSuccessHandler(jsonUtil));
 
         return httpSecurity
-                .securityMatcher("/api/auth/collaborator/**")
+                .securityMatcher(appSecurityConfiguration.getCollaboratorPath())
                 .csrf(csrfConf -> csrfConf.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(basicConfig -> basicConfig.disable())
-                .addFilterBefore(new CoreWardenFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new PerimeterFilter(jsonUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
