@@ -61,14 +61,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- external dependencies-->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.verion}</version>
-                <scope>provided</scope>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
