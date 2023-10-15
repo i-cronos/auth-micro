@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginResponse;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
@@ -12,6 +13,7 @@ import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationServic
 import pe.ibk.cpe.dependencies.infrastructure.security.token.types.TokenType;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class CustomerAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -42,6 +44,7 @@ public class CustomerAuthenticationSuccessHandler implements AuthenticationSucce
     private TokenCreationService.TokenCreationResponse createToken(Authentication authentication) {
         TokenCreationService.TokenCreationRequest tokenCreationRequest = TokenCreationService.TokenCreationRequest.builder()
                 .tokenType(TokenType.CUSTOMER)
+                .authorities(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .build();
 
         return tokenCreationService.create(tokenCreationRequest);

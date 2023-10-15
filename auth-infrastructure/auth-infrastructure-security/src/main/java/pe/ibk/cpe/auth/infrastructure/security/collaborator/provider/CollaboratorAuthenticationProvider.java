@@ -6,15 +6,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
-import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetails;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.CollaboratorUserDetailsService;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.detail.CollaboratorUserDetails;
 
 @Slf4j
 @AllArgsConstructor
 public class CollaboratorAuthenticationProvider implements AuthenticationProvider {
-    private final UserDetailsService collaboratorUserDetailsService;
+    private final CollaboratorUserDetailsService collaboratorUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -24,16 +24,16 @@ public class CollaboratorAuthenticationProvider implements AuthenticationProvide
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        CustomerUserDetails customerUserDetails = (CustomerUserDetails) collaboratorUserDetailsService.loadUserByUsername(username);
+        CollaboratorUserDetails collaboratorUserDetails = (CollaboratorUserDetails) collaboratorUserDetailsService.loadUserByUsername(username);
 
-        boolean isMatched = passwordEncoder.matches(password, customerUserDetails.getPassword());
+        boolean isMatched = passwordEncoder.matches(password, collaboratorUserDetails.getPassword());
 
         log.info("is matched : {}", isMatched);
 
         if (!isMatched)
             throw new BadCredentialsException("No valid password");
 
-        return new CollaboratorUsernamePasswordAuthenticationToken(username, password, null);
+        return new CollaboratorUsernamePasswordAuthenticationToken(username, password, collaboratorUserDetails.getAuthorities());
     }
 
     @Override

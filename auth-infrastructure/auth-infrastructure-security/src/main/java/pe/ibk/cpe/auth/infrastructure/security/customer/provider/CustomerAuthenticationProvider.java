@@ -6,15 +6,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetails;
 
 @Slf4j
 @AllArgsConstructor
 public class CustomerAuthenticationProvider implements AuthenticationProvider {
-    private final UserDetailsService customerUserDetailsService;
+    private final CustomerUserDetailsService customerUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -23,7 +23,7 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
         String username = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        CustomerUserDetails customerUserDetails = (CustomerUserDetails) customerUserDetailsService.loadUserByUsername(username);
+        CustomerUserDetails customerUserDetails = customerUserDetailsService.loadUserByUsername(username);
 
         boolean isMatched = passwordEncoder.matches(password, customerUserDetails.getPassword());
 
@@ -32,7 +32,7 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
         if (!isMatched)
             throw new BadCredentialsException("No valid password");
 
-        return new CustomerUsernamePasswordAuthenticationToken(username, password, null);
+        return new CustomerUsernamePasswordAuthenticationToken(username, password, customerUserDetails.getAuthorities());
 
     }
 

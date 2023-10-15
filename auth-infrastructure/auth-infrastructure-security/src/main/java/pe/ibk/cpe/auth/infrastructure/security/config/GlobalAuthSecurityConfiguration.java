@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,14 +15,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pe.ibk.cpe.auth.infrastructure.database.user.repository.UserRepository;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.CollaboratorUsernamePasswordAuthenticationFilter;
-import pe.ibk.cpe.auth.infrastructure.security.common.configuration.AppSecurityConfiguration;
-import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationFailureHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.handler.CollaboratorAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.provider.CollaboratorAuthenticationProvider;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.CollaboratorUserDetailsService;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.detail.CollaboratorUserMapper;
+import pe.ibk.cpe.auth.infrastructure.security.common.configuration.AppSecurityConfiguration;
 import pe.ibk.cpe.auth.infrastructure.security.common.filter.PerimeterFilter;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.CustomerUsernamePasswordAuthenticationFilter;
-import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationFailureHandler;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.handler.CustomerAuthenticationSuccessHandler;
 import pe.ibk.cpe.auth.infrastructure.security.customer.provider.CustomerAuthenticationProvider;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetailMapper;
@@ -68,23 +69,23 @@ public class GlobalAuthSecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService customerUserDetailsService(UserRepository userRepository) {
+    public CustomerUserDetailsService customerUserDetailsService(UserRepository userRepository) {
         return new CustomerUserDetailsService(userRepository, new CustomerUserDetailMapper());
     }
 
     @Bean
-    public UserDetailsService collaboratorUserDetailsService(UserRepository userRepository) {
-        return new CustomerUserDetailsService(userRepository, new CustomerUserDetailMapper());
+    public CollaboratorUserDetailsService collaboratorUserDetailsService(UserRepository userRepository) {
+        return new CollaboratorUserDetailsService(userRepository, new CollaboratorUserMapper());
     }
 
     @Bean
-    public AuthenticationProvider customerAuthenticationProvider(UserDetailsService customerUserDetailsService,
+    public AuthenticationProvider customerAuthenticationProvider(CustomerUserDetailsService customerUserDetailsService,
                                                                  PasswordEncoder bcryptpasswordEncoder) {
         return new CustomerAuthenticationProvider(customerUserDetailsService, bcryptpasswordEncoder);
     }
 
     @Bean
-    public AuthenticationProvider collaboratorAuthenticationProvider(UserDetailsService collaboratorUserDetailsService,
+    public AuthenticationProvider collaboratorAuthenticationProvider(CollaboratorUserDetailsService collaboratorUserDetailsService,
                                                                      PasswordEncoder bcryptpasswordEncoder) {
         return new CollaboratorAuthenticationProvider(collaboratorUserDetailsService, bcryptpasswordEncoder);
     }
