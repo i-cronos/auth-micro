@@ -7,7 +7,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.CustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.RequestCustomerUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.ResponseCustomerUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.CustomerUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.customer.service.detail.CustomerUserDetails;
 
@@ -32,12 +33,12 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider {
         if (!isMatched)
             throw new BadCredentialsException("No valid password");
 
-        return new CustomerUsernamePasswordAuthenticationToken(username, password, customerUserDetails.getAuthorities());
+        return new ResponseCustomerUsernamePasswordAuthenticationToken(customerUserDetails.getUserId(), username, null, customerUserDetails.getAuthorities());
 
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.isAssignableFrom(CustomerUsernamePasswordAuthenticationToken.class);
+        return RequestCustomerUsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Setter
 public class CustomerUserDetails implements UserDetails {
+    private String userId;
     private String username;
     private String password;
     private List<String> roles;
@@ -20,6 +21,10 @@ public class CustomerUserDetails implements UserDetails {
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     @Override

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.ResponseCollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.dto.CollaboratorLoginResponse;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
@@ -42,8 +43,11 @@ public class CollaboratorAuthenticationSuccessHandler implements AuthenticationS
     }
 
     private TokenCreationService.TokenCreationResponse createToken(Authentication authentication) {
+        ResponseCollaboratorUsernamePasswordAuthenticationToken authenticationResponse = (ResponseCollaboratorUsernamePasswordAuthenticationToken) authentication;
+
         TokenCreationService.TokenCreationRequest tokenCreationRequest = TokenCreationService.TokenCreationRequest.builder()
                 .tokenType(TokenType.USER)
+                .credentialId(authenticationResponse.getUserId())
                 .authorities(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .build();
 

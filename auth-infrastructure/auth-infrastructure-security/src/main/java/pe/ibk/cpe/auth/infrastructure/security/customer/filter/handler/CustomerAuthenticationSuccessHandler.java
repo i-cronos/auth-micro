@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import pe.ibk.cpe.auth.infrastructure.security.customer.filter.authentication.ResponseCustomerUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginResponse;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 import pe.ibk.cpe.dependencies.infrastructure.security.token.TokenCreationService;
@@ -42,9 +43,12 @@ public class CustomerAuthenticationSuccessHandler implements AuthenticationSucce
     }
 
     private TokenCreationService.TokenCreationResponse createToken(Authentication authentication) {
+        ResponseCustomerUsernamePasswordAuthenticationToken authenticationResponse = (ResponseCustomerUsernamePasswordAuthenticationToken) authentication;
+
         TokenCreationService.TokenCreationRequest tokenCreationRequest = TokenCreationService.TokenCreationRequest.builder()
                 .tokenType(TokenType.CUSTOMER)
-                .authorities(authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .credentialId(authenticationResponse.getUserId())
+                .authorities(authenticationResponse.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .build();
 
         return tokenCreationService.create(tokenCreationRequest);

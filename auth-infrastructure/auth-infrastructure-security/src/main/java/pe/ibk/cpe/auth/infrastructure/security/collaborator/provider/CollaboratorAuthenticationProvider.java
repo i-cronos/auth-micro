@@ -7,7 +7,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.RequestCollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.ResponseCollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.CollaboratorUserDetailsService;
 import pe.ibk.cpe.auth.infrastructure.security.collaborator.service.detail.CollaboratorUserDetails;
 
@@ -33,11 +34,11 @@ public class CollaboratorAuthenticationProvider implements AuthenticationProvide
         if (!isMatched)
             throw new BadCredentialsException("No valid password");
 
-        return new CollaboratorUsernamePasswordAuthenticationToken(username, password, collaboratorUserDetails.getAuthorities());
+        return new ResponseCollaboratorUsernamePasswordAuthenticationToken(collaboratorUserDetails.getUserId(), username, password, collaboratorUserDetails.getAuthorities());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.isAssignableFrom(CollaboratorUsernamePasswordAuthenticationToken.class);
+        return RequestCollaboratorUsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

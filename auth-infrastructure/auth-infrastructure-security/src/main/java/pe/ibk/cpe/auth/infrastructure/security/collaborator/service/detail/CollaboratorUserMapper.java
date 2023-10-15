@@ -10,7 +10,7 @@ public class CollaboratorUserMapper {
         CollaboratorUserDetails collaboratorUserDetails = new CollaboratorUserDetails();
         collaboratorUserDetails.setUsername(userEntity.getUsername());
         collaboratorUserDetails.setPassword(userEntity.getPassword());
-        collaboratorUserDetails.setRoles(Collections.singletonList("ADMIN"));
+        collaboratorUserDetails.setRoles(Collections.singletonList("ROLE_OPERATOR"));
 
         return collaboratorUserDetails;
     }

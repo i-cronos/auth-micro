@@ -8,9 +8,10 @@ public class CustomerUserDetailMapper {
 
     public CustomerUserDetails map(UserEntity userEntity) {
         CustomerUserDetails customerUserDetails = new CustomerUserDetails();
+        customerUserDetails.setUserId(userEntity.getId());
         customerUserDetails.setUsername(userEntity.getUsername());
         customerUserDetails.setPassword(userEntity.getPassword());
-        customerUserDetails.setRoles(Collections.singletonList("ADMIN"));
+        customerUserDetails.setRoles(Collections.singletonList("ROLE_ADMIN"));
 
         return customerUserDetails;
     }

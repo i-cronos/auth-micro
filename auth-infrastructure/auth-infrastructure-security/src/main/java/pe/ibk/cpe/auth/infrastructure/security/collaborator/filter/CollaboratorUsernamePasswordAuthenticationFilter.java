@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.CollaboratorUsernamePasswordAuthenticationToken;
+import pe.ibk.cpe.auth.infrastructure.security.collaborator.filter.authentication.RequestCollaboratorUsernamePasswordAuthenticationToken;
 import pe.ibk.cpe.auth.infrastructure.security.customer.filter.dto.CustomerLoginRequest;
 import pe.ibk.cpe.dependencies.common.util.JsonUtil;
 
@@ -28,11 +28,11 @@ public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAu
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         log.info("Collaborator auth Filter ....");
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = getAuthRequest(request);
+        RequestCollaboratorUsernamePasswordAuthenticationToken authenticationRequest = getAuthenticationRequest(request);
 
-        this.setDetails(request, usernamePasswordAuthenticationToken);
+        this.setDetails(request, authenticationRequest);
 
-        Authentication authenticationResponse = this.getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
+        Authentication authenticationResponse = this.getAuthenticationManager().authenticate(authenticationRequest);
 
         log.info("authenticationResponse : {}", authenticationResponse.getPrincipal());
         return authenticationResponse;
@@ -43,11 +43,11 @@ public class CollaboratorUsernamePasswordAuthenticationFilter extends AbstractAu
         authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
     }
 
-    private UsernamePasswordAuthenticationToken getAuthRequest(HttpServletRequest request) {
+    private RequestCollaboratorUsernamePasswordAuthenticationToken getAuthenticationRequest(HttpServletRequest request) {
         try {
             CustomerLoginRequest customerLoginRequest = jsonUtil.fromInputStream(request.getInputStream(), CustomerLoginRequest.class);
 
-            return new CollaboratorUsernamePasswordAuthenticationToken(customerLoginRequest.getUsername(), customerLoginRequest.getPassword());
+            return new RequestCollaboratorUsernamePasswordAuthenticationToken(customerLoginRequest.getUsername(), customerLoginRequest.getPassword());
         } catch (Exception ex) {
             log.error("Not get request body");
             throw new UsernameNotFoundException("Cannot ready the request body");
