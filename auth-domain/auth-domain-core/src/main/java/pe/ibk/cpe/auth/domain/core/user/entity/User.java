@@ -5,7 +5,7 @@ import pe.ibk.cpe.dependencies.domain.entity.BaseEntity;
 
 import java.util.List;
 
-public class SystemUser extends BaseEntity<UserId> {
+public class User extends BaseEntity<UserId> {
     private UserId id;
     private String fullName;
     private String username;
