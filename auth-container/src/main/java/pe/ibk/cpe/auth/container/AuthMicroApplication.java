@@ -13,8 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
                 "pe.ibk.cpe.auth.domain.service",
                 "pe.ibk.cpe.auth.infrastructure.database",
                 "pe.ibk.cpe.auth.infrastructure.security",
-                "pe.ibk.cpe.auth.application.rest",
-                "pe.ibk.cpe.dependencies.global.config"
+                "pe.ibk.cpe.auth.application.rest"
         }
 )
 public class AuthMicroApplication {

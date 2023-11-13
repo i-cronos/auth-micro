@@ -1,0 +1,35 @@
+server:
+  port: 9090
+
+token-general:
+  security:
+    config:
+      issuer: CPE
+      key: LostToken!3.141516
+
+token-group:
+  security:
+    config:
+      groups:
+        - token-type: USER
+          ttl: 10
+          refresh-ttl: 20
+          subject: System
+        - token-type: CUSTOMER
+          ttl: 5
+          refresh-ttl: 10
+          subject: System
+        - token-type: INTERNAL
+          ttl: 5
+          refresh-ttl: 10
+          subject: System
+        - token-type: THIRD
+          ttl: 5
+          refresh-ttl: 10
+          subject: System
+
+app:
+  security:
+    authentication:
+      collaboratorPath: /api/auth/collaborator/**
+      customerPath: /api/auth/customer/**
